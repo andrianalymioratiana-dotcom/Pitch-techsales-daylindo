@@ -1,0 +1,361 @@
+---
+layout: null
+---
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Exercices — Fiche Daylindo 1 | Comprendre la mission de Daylindo</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f8fafc;--card:#ffffff;--border:#e2e8f0;--border2:#cbd5e1;
+  --text:#1e293b;--muted:#64748b;--dim:#94a3b8;
+  --purple:#7c3aed;--purple-l:#ede9fe;--purple-ll:#f5f3ff;
+  --orange:#f97316;--orange-l:#fff7ed;
+  --green:#059669;--green-l:#d1fae5;--green-ll:#ecfdf5;
+  --red:#dc2626;--red-l:#fee2e2;
+  --yellow:#fef9c3;--radius:10px;
+}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans','Segoe UI',sans-serif;min-height:100vh;padding-bottom:60px}
+.header{background:var(--purple);padding:28px 24px 24px;text-align:center;position:relative;overflow:hidden}
+.header::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 70% 50%,rgba(139,92,246,.4),transparent 60%)}
+.logo{font-family:'Syne',sans-serif;font-size:13px;font-weight:800;color:rgba(255,255,255,.6);letter-spacing:.2em;text-transform:uppercase;margin-bottom:10px}
+.header-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#fff;line-height:1.3;position:relative}
+.header-sub{font-size:13px;color:rgba(255,255,255,.7);margin-top:6px;position:relative}
+.badge-count{display:inline-flex;align-items:center;gap:5px;margin-top:12px;background:rgba(255,255,255,.15);color:#fff;font-size:11px;padding:4px 12px;border-radius:20px;position:relative}
+.score-bar{background:#fff;border-bottom:1px solid var(--border);padding:12px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;gap:12px;flex-wrap:wrap}
+.score-label{font-size:12px;color:var(--muted);font-weight:500}
+.score-val{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:var(--purple)}
+.score-progress{flex:1;max-width:200px;height:6px;background:var(--border);border-radius:4px;overflow:hidden}
+.score-fill{height:100%;background:linear-gradient(90deg,var(--purple),var(--orange));border-radius:4px;transition:width .4s ease;width:0%}
+.content{max-width:720px;margin:0 auto;padding:24px 16px}
+.instructions{background:var(--purple-ll);border:1px solid var(--purple-l);border-left:4px solid var(--purple);border-radius:var(--radius);padding:14px 16px;margin-bottom:24px;font-size:13px;color:var(--muted);line-height:1.7}
+.instructions strong{color:var(--purple)}
+.section-title{font-size:10px;letter-spacing:.15em;text-transform:uppercase;font-weight:600;color:var(--dim);margin:28px 0 12px;display:flex;align-items:center;gap:8px}
+.section-title::after{content:'';flex:1;height:1px;background:var(--border)}
+.q-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:14px;overflow:hidden;transition:box-shadow .2s}
+.q-card:focus-within{box-shadow:0 0 0 3px rgba(124,58,237,.15)}
+.q-head{padding:16px 18px 0;display:flex;align-items:flex-start;gap:12px}
+.q-num{min-width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;margin-top:1px}
+.qcm .q-num{background:var(--purple-l);color:var(--purple)}
+.vf .q-num{background:#dbeafe;color:#2563eb}
+.open .q-num{background:var(--orange-l);color:var(--orange)}
+.q-text{font-size:14px;font-weight:600;color:var(--text);line-height:1.55;padding-bottom:14px}
+.q-context{display:block;font-size:12px;font-weight:400;color:var(--muted);margin-top:6px;background:var(--bg);border-left:3px solid var(--border2);padding:8px 10px;border-radius:0 6px 6px 0;font-style:italic;line-height:1.6}
+.options{padding:0 18px 14px 58px;display:flex;flex-direction:column;gap:7px}
+.opt{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border:1px solid var(--border2);border-radius:8px;cursor:pointer;transition:all .2s;font-size:13px;color:var(--muted);line-height:1.5;text-align:left;background:#fff;width:100%}
+.opt:hover:not(:disabled){border-color:var(--purple);background:var(--purple-ll);color:var(--text)}
+.opt.selected{border-color:var(--purple);background:var(--purple-l);color:var(--purple);font-weight:500}
+.opt.correct{border-color:var(--green);background:var(--green-ll);color:var(--green);font-weight:500}
+.opt.wrong{border-color:var(--red);background:var(--red-l);color:var(--red);text-decoration:line-through;opacity:.7}
+.opt-letter{min-width:20px;height:20px;border-radius:4px;background:var(--border);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0}
+.opt.selected .opt-letter{background:var(--purple);color:#fff}
+.opt.correct .opt-letter{background:var(--green);color:#fff}
+.opt.wrong .opt-letter{background:var(--red);color:#fff}
+.opt:disabled{cursor:default}
+.vf-options{padding:0 18px 14px 58px;display:flex;gap:10px}
+.vf-btn{flex:1;padding:10px;border:1px solid var(--border2);border-radius:8px;cursor:pointer;font-size:13px;font-weight:500;transition:all .2s;background:#fff;color:var(--muted)}
+.vf-btn:hover:not(:disabled){background:#f1f5f9;color:var(--text)}
+.vf-btn.selected{border-color:#2563eb;background:#dbeafe;color:#2563eb}
+.vf-btn.correct{border-color:var(--green);background:var(--green-ll);color:var(--green)}
+.vf-btn.wrong{border-color:var(--red);background:var(--red-l);color:var(--red)}
+.vf-btn:disabled{cursor:default}
+.validate-row{padding:0 18px 16px 58px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.btn-validate{background:var(--purple);color:#fff;border:none;border-radius:7px;padding:8px 18px;font-size:12px;font-weight:600;cursor:pointer;transition:background .2s;font-family:inherit}
+.btn-validate:hover{background:#6d28d9}
+.btn-validate:disabled{background:var(--border2);cursor:default}
+.feedback{font-size:12px;font-weight:500;display:none;align-items:flex-start;gap:5px;line-height:1.5;max-width:400px}
+.feedback.correct{color:var(--green);display:flex}
+.feedback.wrong{color:var(--red);display:flex}
+.open-body{padding:0 18px 16px 58px}
+.open-textarea{width:100%;min-height:80px;border:1px solid var(--border2);border-radius:8px;padding:10px 12px;font-size:13px;font-family:inherit;color:var(--text);resize:vertical;transition:border .2s;line-height:1.6}
+.open-textarea:focus{outline:none;border-color:var(--orange);box-shadow:0 0 0 3px rgba(249,115,22,.1)}
+.btn-reveal{margin-top:8px;background:none;border:1px solid var(--border2);border-radius:7px;padding:7px 14px;font-size:12px;color:var(--muted);cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:6px;font-family:inherit}
+.btn-reveal:hover{border-color:var(--orange);color:var(--orange);background:var(--orange-l)}
+.example-box{margin-top:10px;background:var(--orange-l);border:1px solid rgba(249,115,22,.25);border-radius:8px;padding:12px 14px;font-size:12px;color:var(--text);line-height:1.7;display:none}
+.example-box strong{color:var(--orange);font-size:11px;letter-spacing:.05em;text-transform:uppercase;display:block;margin-bottom:6px}
+.send-block{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:22px 24px;margin-top:28px;text-align:center}
+.send-score{font-family:'Syne',sans-serif;font-size:32px;font-weight:800;color:var(--purple);margin-bottom:4px}
+.send-label{font-size:13px;color:var(--muted);margin-bottom:16px}
+.send-desc{font-size:12px;color:var(--muted);line-height:1.7;margin-bottom:16px}
+.send-desc strong{color:var(--text)}
+.btn-send{display:inline-flex;align-items:center;gap:8px;background:var(--purple);color:#fff;border:none;border-radius:8px;padding:12px 24px;font-size:13px;font-weight:600;cursor:pointer;transition:background .2s;font-family:inherit}
+.btn-send:hover{background:#6d28d9}
+.btn-reset{display:inline-flex;align-items:center;gap:6px;background:none;border:1px solid var(--border2);border-radius:8px;padding:10px 18px;font-size:12px;color:var(--muted);cursor:pointer;margin-top:10px;transition:all .2s;font-family:inherit}
+.btn-reset:hover{border-color:var(--text);color:var(--text)}
+.send-hint{font-size:11px;color:var(--dim);margin-top:8px}
+@media(max-width:600px){
+  .header-title{font-size:18px}
+  .content{padding:16px 12px}
+  .options,.vf-options,.validate-row,.open-body{padding-left:14px}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">DAYLINDO · Formation Tech Sales</div>
+  <div class="header-title">Comprendre la mission de Daylindo</div>
+  <div class="header-sub">Fiche 1 — Exercices pratiques</div>
+  <div class="badge-count">📝 7 questions</div>
+</div>
+
+<div class="score-bar">
+  <div><div class="score-label">Score QCM + Vrai/Faux</div></div>
+  <div class="score-progress"><div class="score-fill" id="score-fill"></div></div>
+  <div class="score-val"><span id="score-num">0</span><span style="font-size:13px;color:var(--muted);font-weight:400">/4</span></div>
+</div>
+
+<div class="content">
+
+  <div class="instructions">
+    <strong>📋 Instructions :</strong> Réponds à chaque question. Pour les QCM et Vrai/Faux, clique sur ta réponse puis valide. Pour les questions ouvertes, écris ta réponse puis révèle un exemple de correction. À la fin, envoie tes réponses en un clic.
+  </div>
+
+  <div class="section-title">QCM</div>
+
+  <!-- Q1 — Raisonnement causes -->
+  <div class="q-card qcm" id="card-1">
+    <div class="q-head">
+      <div class="q-num">1</div>
+      <div class="q-text">
+        Un responsable logistique te dit : <span class="q-context">"On recrute 40 saisonniers chaque été. Les 3 premières semaines, les erreurs s'accumulent et nos anciens sont épuisés à les surveiller."</span>
+        Parmi ces causes, laquelle est directement liée au problème que Daylindo adresse ?
+      </div>
+    </div>
+    <div class="options">
+      <button class="opt" onclick="selectOpt(1,'A',this)"><span class="opt-letter">A</span>Le responsable recrute trop de monde en même temps.</button>
+      <button class="opt" onclick="selectOpt(1,'B',this)"><span class="opt-letter">B</span>Le savoir-faire des anciens n'est pas structuré ni transmis — chaque nouveau repart de zéro.</button>
+      <button class="opt" onclick="selectOpt(1,'C',this)"><span class="opt-letter">C</span>Les saisonniers ne sont pas assez motivés pour apprendre vite.</button>
+      <button class="opt" onclick="selectOpt(1,'D',this)"><span class="opt-letter">D</span>L'entreprise n'a pas assez de managers sur le terrain.</button>
+    </div>
+    <div class="validate-row">
+      <button class="btn-validate" id="btn-1" onclick="validate(1,'B')" disabled>✓ Valider</button>
+      <div class="feedback correct" id="fb-1-ok">✅ Exact. C'est le cœur du problème que Daylindo résout : le savoir-faire existe mais n'est pas structuré ni transmis.</div>
+      <div class="feedback wrong" id="fb-1-ko">❌ La bonne réponse est B. Le vrai problème n'est pas le volume ou la motivation — c'est que la transmission du savoir-faire n'est pas organisée.</div>
+    </div>
+  </div>
+
+  <!-- Q2 — Ce que Daylindo n'est PAS -->
+  <div class="q-card qcm" id="card-2">
+    <div class="q-head">
+      <div class="q-num">2</div>
+      <div class="q-text">
+        Un prospect te dit : <span class="q-context">"On a déjà une plateforme e-learning avec des modules vidéo pour former nos équipes."</span>
+        Quelle est la bonne réponse pour lui expliquer ce que fait Daylindo en plus ?
+      </div>
+    </div>
+    <div class="options">
+      <button class="opt" onclick="selectOpt(2,'A',this)"><span class="opt-letter">A</span>"Notre plateforme est plus moderne et plus simple à utiliser que la vôtre."</button>
+      <button class="opt" onclick="selectOpt(2,'B',this)"><span class="opt-letter">B</span>"Daylindo ne remplace pas vos vidéos — on structure ce qui se passe après, directement au poste, quand votre collaborateur applique pour la première fois."</button>
+      <button class="opt" onclick="selectOpt(2,'C',this)"><span class="opt-letter">C</span>"Vos modules vidéo ne servent à rien si vous n'avez pas notre outil."</button>
+      <button class="opt" onclick="selectOpt(2,'D',this)"><span class="opt-letter">D</span>"On fait la même chose mais avec un formateur externe qui vient en présentiel."</button>
+    </div>
+    <div class="validate-row">
+      <button class="btn-validate" id="btn-2" onclick="validate(2,'B')" disabled>✓ Valider</button>
+      <div class="feedback correct" id="fb-2-ok">✅ Parfait. Daylindo n'est pas du e-learning — c'est la transmission terrain, au poste, par les experts internes.</div>
+      <div class="feedback wrong" id="fb-2-ko">❌ La bonne réponse est B. Ne dénigre jamais l'existant — montre ce que Daylindo couvre que le e-learning ne couvre pas : la transmission réelle au poste.</div>
+    </div>
+  </div>
+
+  <div class="section-title">Vrai / Faux</div>
+
+  <!-- Q3 — Conséquences concrètes -->
+  <div class="q-card vf" id="card-3">
+    <div class="q-head">
+      <div class="q-num">3</div>
+      <div class="q-text">
+        Quand le savoir-faire des anciens n'est pas transmis, les seules conséquences pour l'entreprise sont des erreurs de production.
+        <span class="q-context">Pense aux 3 conséquences mentionnées dans la fiche : erreurs, perte de temps, perte d'argent.</span>
+      </div>
+    </div>
+    <div class="vf-options">
+      <button class="vf-btn" onclick="selectVF(3,'vrai',this)">✅ VRAI</button>
+      <button class="vf-btn" onclick="selectVF(3,'faux',this)">❌ FAUX</button>
+    </div>
+    <div class="validate-row">
+      <button class="btn-validate" id="btn-3" onclick="validateVF(3,'faux')" disabled>✓ Valider</button>
+      <div class="feedback correct" id="fb-3-ok">✅ Exact. Les conséquences sont triples : erreurs + perte de temps + perte d'argent. Retenir les 3 est important — chacune parle à un interlocuteur différent.</div>
+      <div class="feedback wrong" id="fb-3-ko">❌ Faux. Il y a 3 conséquences : erreurs, perte de temps ET perte d'argent. Cite les 3 — ça couvre à la fois le terrain, les RH et la direction.</div>
+    </div>
+  </div>
+
+  <!-- Q4 — Ce que Daylindo est / n'est pas -->
+  <div class="q-card vf" id="card-4">
+    <div class="q-head">
+      <div class="q-num">4</div>
+      <div class="q-text">
+        Daylindo peut être décrit comme "une méthode pour rendre les équipes opérationnelles plus vite" — cette formule est plus juste que "une formation".
+        <span class="q-context">Réfléchis à pourquoi le mot "formation" peut être trompeur dans ce contexte.</span>
+      </div>
+    </div>
+    <div class="vf-options">
+      <button class="vf-btn" onclick="selectVF(4,'vrai',this)">✅ VRAI</button>
+      <button class="vf-btn" onclick="selectVF(4,'faux',this)">❌ FAUX</button>
+    </div>
+    <div class="validate-row">
+      <button class="btn-validate" id="btn-4" onclick="validateVF(4,'vrai')" disabled>✓ Valider</button>
+      <div class="feedback correct" id="fb-4-ok">✅ Exact. "Formation" évoque une salle de classe ou du e-learning. "Méthode pour rendre les équipes opérationnelles" est plus précis et parle directement au résultat business.</div>
+      <div class="feedback wrong" id="fb-4-ko">❌ Vrai. Le mot "formation" crée une confusion avec le e-learning ou le présentiel. Préfère toujours "méthode" ou "démarche" pour décrire Daylindo.</div>
+    </div>
+  </div>
+
+  <div class="section-title">Questions ouvertes</div>
+
+  <!-- Q5 — Appliquer à un cas concret -->
+  <div class="q-card open" id="card-5">
+    <div class="q-head">
+      <div class="q-num">5</div>
+      <div class="q-text">
+        Mise en situation — Une DRH d'une chaîne de restauration rapide te dit :
+        <span class="q-context">"On ouvre 5 nouveaux restaurants cette année. Chaque fois c'est la même galère : les nouveaux mettent 3 semaines à être vraiment autonomes, et les équipes en place sont sur les dents."</span>
+        En 2-3 phrases, explique-lui quel est le vrai problème selon Daylindo, et ce que Daylindo apporte concrètement dans son cas.
+      </div>
+    </div>
+    <div class="open-body">
+      <textarea class="open-textarea" id="ta-5" placeholder="Écris ta réponse ici..."></textarea>
+      <button class="btn-reveal" onclick="revealExample(5)">💡 Voir un exemple</button>
+      <div class="example-box" id="ex-5">
+        <strong>Exemple de réponse</strong>
+        "Le problème, c'est que le savoir-faire de vos équipes expérimentées n'est nulle part structuré — chaque ouverture recommence de zéro. Daylindo permet de capturer ce savoir-faire et de le transmettre directement au poste, dans le restaurant, par vos meilleurs éléments internes. Résultat : vos nouveaux sont opérationnels plus vite, et vos anciens passent moins de temps à les surveiller."
+      </div>
+    </div>
+  </div>
+
+  <!-- Q6 — Objection terrain -->
+  <div class="q-card open" id="card-6">
+    <div class="q-head">
+      <div class="q-num">6</div>
+      <div class="q-text">
+        Un Directeur des opérations te répond :
+        <span class="q-context">"On forme déjà nos gens — on met les nouveaux en doublon avec un ancien pendant 2 semaines."</span>
+        Il pense que son système fonctionne. Comment lui montres-tu, sans le brusquer, que Daylindo apporte quelque chose que son doublon n'a pas ?
+      </div>
+    </div>
+    <div class="open-body">
+      <textarea class="open-textarea" id="ta-6" placeholder="Écris ta réponse ici..."></textarea>
+      <button class="btn-reveal" onclick="revealExample(6)">💡 Voir un exemple</button>
+      <div class="example-box" id="ex-6">
+        <strong>Exemple de réponse</strong>
+        "C'est exactement le bon réflexe — la transmission terrain par un expert interne, c'est ce qui marche le mieux. La question c'est : est-ce que ce que votre ancien transmet est structuré de la même façon par tout le monde, et est-ce que vous pouvez savoir à quel niveau en est le nouveau à tout moment ? Daylindo ne remplace pas votre doublon — il l'organise et le rend mesurable."
+      </div>
+    </div>
+  </div>
+
+  <!-- Q7 — Pitch ciblé par conséquence -->
+  <div class="q-card open" id="card-7">
+    <div class="q-head">
+      <div class="q-num">7</div>
+      <div class="q-text">
+        Les 3 conséquences du problème sont : erreurs, perte de temps, perte d'argent.
+        <span class="q-context">Choisis l'une des 3, et rédige une accroche d'une phrase pour un cold call qui part de cette conséquence — sans citer Daylindo dans la première phrase.</span>
+      </div>
+    </div>
+    <div class="open-body">
+      <textarea class="open-textarea" id="ta-7" placeholder="Ex : 'Je vous appelle parce que...'"></textarea>
+      <button class="btn-reveal" onclick="revealExample(7)">💡 Voir un exemple</button>
+      <div class="example-box" id="ex-7">
+        <strong>Exemple — angle "perte d'argent"</strong>
+        "Je vous appelle parce qu'on voit partout dans la logistique que les premières semaines d'intégration coûtent cher — doublon, erreurs, retards — et que ce coût n'est presque jamais mesuré ni financé. C'est un sujet chez vous ?"
+        <br><br>
+        <strong>Exemple — angle "erreurs"</strong>
+        "Je vous appelle parce que dans les métiers opérationnels, les erreurs des nouveaux en période d'intégration sont souvent le signe qu'ils n'ont pas encore les bons gestes — pas la faute à la motivation, mais à la transmission. C'est quelque chose que vous observez ?"
+      </div>
+    </div>
+  </div>
+
+  <!-- SEND -->
+  <div class="send-block">
+    <div class="send-score"><span id="final-score">0</span>/4</div>
+    <div class="send-label">sur les questions QCM + Vrai/Faux</div>
+    <div style="font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px">📨 Envoie tes réponses à ton formateur</div>
+    <div class="send-desc">Un clic ouvre ta messagerie avec tout pré-rempli — ton score, tes réponses QCM et tes réponses ouvertes.<br>Envoyé directement à <strong>miora@daylindo.com</strong>.</div>
+    <button class="btn-send" onclick="sendEmail()">✉️ Envoyer mes réponses</button>
+    <div class="send-hint">Ton client mail (Gmail, Outlook…) s'ouvrira avec le message prêt à envoyer.</div>
+    <br>
+    <button class="btn-reset" onclick="resetAll()">🔄 Recommencer</button>
+  </div>
+
+</div>
+
+<script>
+let score=0,answered={},selections={},vfSelections={};
+function selectOpt(q,l,btn){
+  if(answered[q])return;
+  document.getElementById('card-'+q).querySelectorAll('.opt').forEach(o=>o.classList.remove('selected'));
+  btn.classList.add('selected');selections[q]=l;
+  document.getElementById('btn-'+q).disabled=false;
+}
+function validate(q,correct){
+  if(answered[q])return;answered[q]=true;
+  const sel=selections[q];
+  document.getElementById('card-'+q).querySelectorAll('.opt').forEach(o=>{
+    o.disabled=true;
+    const l=o.querySelector('.opt-letter').textContent;
+    if(l===correct)o.classList.add('correct');
+    else if(l===sel&&sel!==correct)o.classList.add('wrong');
+  });
+  document.getElementById('btn-'+q).disabled=true;
+  if(sel===correct){score++;document.getElementById('fb-'+q+'-ok').style.display='flex';}
+  else{document.getElementById('fb-'+q+'-ko').style.display='flex';}
+  updateScore();
+}
+function selectVF(q,val,btn){
+  if(answered[q])return;
+  document.getElementById('card-'+q).querySelectorAll('.vf-btn').forEach(b=>b.classList.remove('selected'));
+  btn.classList.add('selected');vfSelections[q]=val;
+  document.getElementById('btn-'+q).disabled=false;
+}
+function validateVF(q,correct){
+  if(answered[q])return;answered[q]=true;
+  const sel=vfSelections[q];
+  document.getElementById('card-'+q).querySelectorAll('.vf-btn').forEach(b=>{
+    b.disabled=true;
+    const v=b.textContent.includes('VRAI')?'vrai':'faux';
+    if(v===correct)b.classList.add('correct');
+    else if(v===sel&&sel!==correct)b.classList.add('wrong');
+  });
+  document.getElementById('btn-'+q).disabled=true;
+  if(sel===correct){score++;document.getElementById('fb-'+q+'-ok').style.display='flex';}
+  else{document.getElementById('fb-'+q+'-ko').style.display='flex';}
+  updateScore();
+}
+function updateScore(){
+  document.getElementById('score-num').textContent=score;
+  document.getElementById('final-score').textContent=score;
+  document.getElementById('score-fill').style.width=(score/4*100)+'%';
+}
+function revealExample(q){
+  const ex=document.getElementById('ex-'+q);
+  const btn=ex.previousElementSibling;
+  if(ex.style.display==='block'){ex.style.display='none';btn.textContent='💡 Voir un exemple';}
+  else{ex.style.display='block';btn.textContent='🙈 Masquer l\'exemple';}
+}
+function sendEmail(){
+  const q5=document.getElementById('ta-5').value||'(pas de réponse)';
+  const q6=document.getElementById('ta-6').value||'(pas de réponse)';
+  const q7=document.getElementById('ta-7').value||'(pas de réponse)';
+  const q1=selections[1]||'(non répondu)';
+  const q2=selections[2]||'(non répondu)';
+  const q3=vfSelections[3]||'(non répondu)';
+  const q4=vfSelections[4]||'(non répondu)';
+  const subject=encodeURIComponent('Exercices Fiche Daylindo 1 — Score '+score+'/4');
+  const body=encodeURIComponent(`FICHE DAYLINDO 1 — Comprendre la mission de Daylindo\nScore : ${score}/4\n\n--- QCM ---\nQ1 (Cas saisonniers) : ${q1} (bonne réponse : B)\nQ2 (Objection e-learning) : ${q2} (bonne réponse : B)\n\n--- VRAI / FAUX ---\nQ3 (3 conséquences) : ${q3} (bonne réponse : FAUX)\nQ4 (Méthode vs formation) : ${q4} (bonne réponse : VRAI)\n\n--- QUESTIONS OUVERTES ---\nQ5 - Cas restauration rapide :\n${q5}\n\nQ6 - Objection doublon :\n${q6}\n\nQ7 - Accroche cold call :\n${q7}`);
+  window.location.href=`mailto:miora@daylindo.com?subject=${subject}&body=${body}`;
+}
+function resetAll(){
+  score=0;answered={};selections={};vfSelections={};updateScore();
+  document.querySelectorAll('.opt').forEach(o=>{o.disabled=false;o.classList.remove('selected','correct','wrong');});
+  document.querySelectorAll('.vf-btn').forEach(b=>{b.disabled=false;b.classList.remove('selected','correct','wrong');});
+  document.querySelectorAll('.btn-validate').forEach(b=>b.disabled=true);
+  document.querySelectorAll('.feedback').forEach(f=>f.style.display='none');
+  document.querySelectorAll('.open-textarea').forEach(t=>t.value='');
+  document.querySelectorAll('.example-box').forEach(e=>e.style.display='none');
+  document.querySelectorAll('.btn-reveal').forEach(b=>b.textContent='💡 Voir un exemple');
+}
+</script>
+</body>
+</html>
