@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daylindo — Pitchs Cold Call v4</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#080b12;--bg2:#0e1320;--bg3:#131929;
+  --border:#1c2438;--border2:#263044;
+  --text:#e8edf5;--muted:#8a96ad;--dim:#4a5568;
+  --s1:#8b5cf6;--s1b:#1a0f2e;--s1c:#c4b5fd;
+  --s2:#f97316;--s2b:#1f1105;--s2c:#fdba74;
+  --s3:#3b82f6;--s3b:#091629;--s3c:#93c5fd;
+  --vert:#22c55e;--rouge:#ef4444;--amber:#f59e0b;
+}
+body{background:var(--bg);color:var(--text);font-family:'DM Mono','Courier New',monospace;min-height:100vh;overflow-x:hidden}
+
+/* ── HEADER ── */
+.header{padding:28px 40px 0;display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;border-bottom:1px solid var(--border);padding-bottom:20px}
+.brand{display:flex;flex-direction:column;gap:4px}
+.logo{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;color:#fff;letter-spacing:-.5px}
+.tagline{font-size:10px;color:var(--muted);letter-spacing:.2em;text-transform:uppercase}
+.doc-meta{text-align:right;display:flex;flex-direction:column;gap:4px;align-items:flex-end}
+.doc-title{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:#fff}
+.doc-sub{font-size:10px;color:var(--dim);letter-spacing:.08em}
+
+/* ── RÈGLE D'OR ── */
+.regle{margin:0 40px;background:var(--bg2);border-bottom:1px solid var(--border);padding:14px 20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.regle-label{font-size:9px;color:var(--dim);letter-spacing:.15em;text-transform:uppercase;flex-shrink:0}
+.rules-inline{display:flex;gap:7px;flex-wrap:wrap}
+.rule-chip{font-size:10px;padding:3px 11px;border-radius:20px;border:1px solid}
+.rule-chip.s1{background:rgba(139,92,246,.1);color:var(--s1c);border-color:rgba(139,92,246,.25)}
+.rule-chip.s2{background:rgba(249,115,22,.1);color:var(--s2c);border-color:rgba(249,115,22,.25)}
+.rule-chip.s3{background:rgba(59,130,246,.1);color:var(--s3c);border-color:rgba(59,130,246,.25)}
+
+/* ── NAV ── */
+.nav-wrap{position:sticky;top:0;z-index:100;background:var(--bg);border-bottom:1px solid var(--border);padding:0 40px}
+.nav{display:flex;gap:0;overflow-x:auto;scrollbar-width:none}
+.nav::-webkit-scrollbar{display:none}
+.nav-btn{background:transparent;border:none;border-bottom:2px solid transparent;color:var(--muted);font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.07em;text-transform:uppercase;padding:14px 16px;cursor:pointer;transition:all .2s;white-space:nowrap;display:flex;align-items:center;gap:6px;flex-shrink:0}
+.nav-btn:hover{color:var(--text)}
+.nav-btn.active{color:var(--text)}
+.nav-btn.s1.active{border-bottom-color:var(--s1);color:var(--s1c)}
+.nav-btn.s2.active{border-bottom-color:var(--s2);color:var(--s2c)}
+.nav-btn.s3.active{border-bottom-color:var(--s3);color:var(--s3c)}
+.nav-btn.overview.active{border-bottom-color:#64748b;color:#94a3b8}
+.nav-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+.s1 .nav-dot,.nav-btn.s1 .nav-dot{background:var(--s1)}
+.s2 .nav-dot,.nav-btn.s2 .nav-dot{background:var(--s2)}
+.s3 .nav-dot,.nav-btn.s3 .nav-dot{background:var(--s3)}
+.nav-btn.overview .nav-dot{background:#64748b}
+.seg-divider{width:1px;background:var(--border);flex-shrink:0;margin:8px 4px}
+
+/* ── PANELS ── */
+.panel{display:none;padding:28px 40px 60px;max-width:960px;animation:fadeIn .25s ease}
+.panel.show{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+
+/* ── OVERVIEW ── */
+.overview-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:28px}
+.ov-seg{border-radius:10px;overflow:hidden;border:1px solid var(--border)}
+.ov-head{padding:14px 16px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:500}
+.s1 .ov-head{background:rgba(139,92,246,.1);color:var(--s1c)}
+.s2 .ov-head{background:rgba(249,115,22,.1);color:var(--s2c)}
+.s3 .ov-head{background:rgba(59,130,246,.1);color:var(--s3c)}
+.ov-desc{padding:12px 16px;font-size:11px;color:var(--muted);line-height:1.7;background:var(--bg2);border-top:1px solid var(--border)}
+.ov-pitchs{background:var(--bg2)}
+.ov-pitch-row{padding:10px 16px;border-top:1px solid var(--border);display:grid;grid-template-columns:60px 1fr;gap:10px;align-items:start;cursor:pointer;transition:background .15s}
+.ov-pitch-row:hover{background:var(--bg3)}
+.ov-code{font-size:10px;font-weight:500;padding:2px 7px;border-radius:4px;width:fit-content}
+.s1 .ov-code{background:rgba(139,92,246,.15);color:var(--s1c)}
+.s2 .ov-code{background:rgba(249,115,22,.15);color:var(--s2c)}
+.s3 .ov-code{background:rgba(59,130,246,.15);color:var(--s3c)}
+.ov-pitch-info{display:flex;flex-direction:column;gap:3px}
+.ov-pitch-angle{font-size:12px;color:var(--text)}
+.ov-pitch-who{font-size:10px;color:var(--dim)}
+
+/* ── PITCH CARD ── */
+.pitch-hero{border-radius:10px;padding:22px 26px;margin-bottom:20px;position:relative;overflow:hidden}
+.s1 .pitch-hero{background:var(--s1b);border:1px solid rgba(139,92,246,.2)}
+.s2 .pitch-hero{background:var(--s2b);border:1px solid rgba(249,115,22,.2)}
+.s3 .pitch-hero{background:var(--s3b);border:1px solid rgba(59,130,246,.2)}
+.pitch-code{font-size:10px;letter-spacing:.15em;text-transform:uppercase;margin-bottom:8px}
+.s1 .pitch-code{color:var(--s1)}.s2 .pitch-code{color:var(--s2)}.s3 .pitch-code{color:var(--s3)}
+.pitch-title{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:#fff;margin-bottom:6px}
+.pitch-who{font-size:11px;color:var(--muted)}
+.pitch-who strong{color:var(--text)}
+
+/* ── PAIN POINT ── */
+.pp-block{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:16px 20px;margin-bottom:16px}
+.pp-label{font-size:9px;letter-spacing:.13em;text-transform:uppercase;color:var(--amber);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.pp-items{display:flex;flex-direction:column;gap:6px}
+.pp-item{font-size:12px;color:var(--muted);line-height:1.65;padding-left:14px;position:relative}
+.pp-item::before{content:'·';position:absolute;left:0;color:var(--amber)}
+
+/* ── SCRIPT ── */
+.script-section{margin-bottom:16px}
+.script-label{font-size:9px;letter-spacing:.13em;text-transform:uppercase;color:var(--dim);margin-bottom:10px}
+.script-block{display:flex;flex-direction:column;gap:8px}
+.speech{background:#0d1a30;border:1px solid rgba(59,130,246,.15);border-left:3px solid;border-radius:0 6px 6px 0;padding:14px 16px;font-size:13px;line-height:1.75;color:var(--text)}
+.s1 .speech{border-left-color:var(--s1)}
+.s2 .speech{border-left-color:var(--s2)}
+.s3 .speech{border-left-color:var(--s3)}
+.speech strong{font-weight:500}
+.speech em{color:var(--muted);font-style:normal}
+.pause{background:rgba(34,197,94,.05);border:1px solid rgba(34,197,94,.15);border-radius:6px;padding:9px 14px;font-size:11px;color:#86efac;font-style:italic;text-align:center}
+.note{background:var(--bg3);border:1px solid var(--border2);border-radius:6px;padding:11px 14px;font-size:11px;color:var(--muted);line-height:1.65}
+.ref{background:rgba(100,116,139,.06);border:1px solid rgba(100,116,139,.15);border-radius:6px;padding:10px 14px;font-size:11px;color:#94a3b8;line-height:1.65}
+.ref-label{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);margin-bottom:4px}
+
+/* ── VARIANTE ── */
+.variante-label{font-size:9px;letter-spacing:.13em;text-transform:uppercase;padding:5px 10px;border-radius:4px;margin-bottom:10px;display:inline-block}
+.var-a{background:rgba(139,92,246,.1);color:var(--s1c)}
+.var-b{background:rgba(249,115,22,.1);color:var(--s2c)}
+.variante-block{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:16px 20px;margin-bottom:12px}
+.variante-desc{font-size:10px;color:var(--dim);margin-bottom:12px;font-style:italic}
+
+/* ── RÈGLES ── */
+.rules-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:20px}
+.rule-card{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:16px 18px}
+.rule-title{font-size:12px;font-weight:500;color:#fff;margin-bottom:6px}
+.rule-desc{font-size:11px;color:var(--muted);line-height:1.65}
+
+/* ── RAPPEL FINAL ── */
+.rappel{background:#0a1628;border:1px solid rgba(59,130,246,.15);border-radius:8px;padding:16px 20px;margin-top:20px;font-size:12px;color:var(--muted);line-height:1.75}
+.rappel strong{color:#93c5fd}
+
+/* ── RESPONSIVE ── */
+@media(max-width:768px){
+  .header,.nav-wrap,.panel{padding-left:16px;padding-right:16px}
+  .regle{margin:0 16px;padding:12px 16px}
+  .overview-grid{grid-template-columns:1fr}
+  .rules-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="brand">
+    <div class="logo">DAYLINDO</div>
+    <div class="tagline">When Skills Matter & Experience Count</div>
+  </div>
+  <div class="doc-meta">
+    <div class="doc-title">Pitchs Cold Call — Acquisition de leads</div>
+    <div class="doc-sub">Usage équipe commerciale · Avril 2026 · Version 4 — 8 pitchs · 3 segments</div>
+  </div>
+</div>
+
+<div class="regle" style="margin:0;padding:12px 40px;background:var(--bg2)">
+  <div class="regle-label">Objectif</div>
+  <div style="font-size:11px;color:var(--muted)">Le cold call n'est pas là pour vendre. C'est là pour obtenir <strong style="color:var(--text)">20 à 30 minutes</strong>.</div>
+</div>
+
+<div class="nav-wrap">
+  <div class="nav">
+    <button class="nav-btn overview active" onclick="show('overview',this)">
+      <span class="nav-dot"></span>Vue d'ensemble
+    </button>
+    <div class="seg-divider"></div>
+    <button class="nav-btn s1" onclick="show('s1a',this)">
+      <span class="nav-dot"></span>S1a — Travail temporaire
+    </button>
+    <button class="nav-btn s1" onclick="show('s1b',this)">
+      <span class="nav-dot"></span>S1b — Saisonnalité
+    </button>
+    <div class="seg-divider"></div>
+    <button class="nav-btn s3" onclick="show('s3a',this)">
+      <span class="nav-dot"></span>S3a — Agences intérim
+    </button>
+    <button class="nav-btn s3" onclick="show('s3b',this)">
+      <span class="nav-dot"></span>S3b — Franchise / Bancaire
+    </button>
+    <div class="seg-divider"></div>
+    <button class="nav-btn s2" onclick="show('s2a',this)">
+      <span class="nav-dot"></span>S2a — Coût caché
+    </button>
+    <button class="nav-btn s2" onclick="show('s2b',this)">
+      <span class="nav-dot"></span>S2b — Turnover & Onboarding
+    </button>
+    <button class="nav-btn s2" onclick="show('s2c',this)">
+      <span class="nav-dot"></span>S2c — Conformité
+    </button>
+    <button class="nav-btn s2" onclick="show('s2d',this)">
+      <span class="nav-dot"></span>S2d — Transmission savoirs
+    </button>
+    <div class="seg-divider"></div>
+    <button class="nav-btn overview" onclick="show('regles',this)">
+      <span class="nav-dot"></span>4 règles communes
+    </button>
+  </div>
+</div>
+
+<!-- ────────── VUE D'ENSEMBLE ────────── -->
+<div class="panel show" id="panel-overview">
+  <div style="margin-bottom:20px;padding-top:4px">
+    <div style="font-size:11px;color:var(--muted);line-height:1.8;max-width:700px">
+      Huit pitchs organisés en trois segments issus de la segmentation marketing Daylindo. Chaque pitch suit la même structure : <strong style="color:var(--text)">accroche courte → question → solution en une phrase → demande de 20–30 minutes</strong>.
+    </div>
+  </div>
+
+  <div class="overview-grid">
+    <!-- SEG 1 -->
+    <div class="ov-seg s1">
+      <div class="ov-head">💰 Segment 1 — Optimisateurs financeurs</div>
+      <div class="ov-desc">Intérim · Saisonnalité · ETP · Retail<br>Sensible au ROI rapide, à l'optimisation du financement OPCO et à l'automatisation de l'intégration. Le financement est un argument central.</div>
+      <div class="ov-pitchs">
+        <div class="ov-pitch-row" onclick="show('s1a',null)">
+          <span class="ov-code">S1a</span>
+          <div class="ov-pitch-info">
+            <div class="ov-pitch-angle">Travail temporaire</div>
+            <div class="ov-pitch-who">Dir. commercial / Dir. région / DRH</div>
+          </div>
+        </div>
+        <div class="ov-pitch-row" onclick="show('s1b',null)">
+          <span class="ov-code">S1b</span>
+          <div class="ov-pitch-info">
+            <div class="ov-pitch-angle">Saisonnalité</div>
+            <div class="ov-pitch-who">DRH · Dir. exploitation · Dir. opérations</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- SEG 3 -->
+    <div class="ov-seg s3">
+      <div class="ov-head">🏦 Segment 3 — Réseaux multisite</div>
+      <div class="ov-desc">Agences d'intérim · Franchise · Bancaire · Assurance<br>Sensible à l'harmonisation des pratiques, au pilotage multi-sites. Le financement OPCO est un argument complémentaire.</div>
+      <div class="ov-pitchs">
+        <div class="ov-pitch-row" onclick="show('s3a',null)">
+          <span class="ov-code">S3a</span>
+          <div class="ov-pitch-info">
+            <div class="ov-pitch-angle">Réseau agences intérim — permanents</div>
+            <div class="ov-pitch-who">DRH groupe · Dir. formation · Dir. réseau</div>
+          </div>
+        </div>
+        <div class="ov-pitch-row" onclick="show('s3b',null)">
+          <span class="ov-code">S3b</span>
+          <div class="ov-pitch-info">
+            <div class="ov-pitch-angle">Réseau franchise / bancaire / assurance</div>
+            <div class="ov-pitch-who">DRH groupe · Dir. formation · Dir. réseau</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- SEG 2 -->
+    <div class="ov-seg s2">
+      <div class="ov-head">🔧 Segment 2 — Gestes métiers</div>
+      <div class="ov-desc">Industrie · Secteurs réglementés · Transmission des savoirs<br>Sensible à la sécurisation des gestes techniques et à la conformité. Le financement est un bonus.</div>
+      <div class="ov-pitchs">
+        <div class="ov-pitch-row" onclick="show('s2a',null)">
+          <span class="ov-code">S2a</span>
+          <div class="ov-pitch-info">
+            <div class="ov-pitch-angle">Coût caché industriel</div>
+            <div class="ov-pitch-who">Dir. production · Dir. opérations</div>
+          </div>
+        </div>
+        <div class="ov-pitch-row" onclick="show('s2b',null)">
+          <span class="ov-code">S2b</span>
+          <div class="ov-pitch-info">
+            <div class="ov-pitch-angle">Turnover & Onboarding</div>
+            <div class="ov-pitch-who">DRH · Responsable formation</div>
+          </div>
+        </div>
+        <div class="ov-pitch-row" onclick="show('s2c',null)">
+          <span class="ov-code">S2c</span>
+          <div class="ov-pitch-info">
+            <div class="ov-pitch-angle">Conformité réglementaire</div>
+            <div class="ov-pitch-who">Dir. HSE · DRH secteurs réglementés</div>
+          </div>
+        </div>
+        <div class="ov-pitch-row" onclick="show('s2d',null)">
+          <span class="ov-code">S2d</span>
+          <div class="ov-pitch-info">
+            <div class="ov-pitch-angle">Transmission des savoirs</div>
+            <div class="ov-pitch-who">Resp. formation · Resp. transmission savoirs · DRH</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ────────── S1a ────────── -->
+<div class="panel s1" id="panel-s1a">
+  <div class="pitch-hero">
+    <div class="pitch-code">Segment 1 · Pitch S1a</div>
+    <div class="pitch-title">Sociétés de travail temporaire — formation des intérimaires</div>
+    <div class="pitch-who"><strong>Interlocuteur :</strong> Directeur commercial national · Directeur de région · DRH</div>
+  </div>
+
+  <div class="pp-block">
+    <div class="pp-label">🎯 Pain point ciblé — Différenciation commerciale insuffisante · relation grands comptes fragile</div>
+    <div class="pp-items">
+      <div class="pp-item">Les ESN et sociétés d'intérim se concurrencent sur le prix — la formation au poste est un levier de différenciation rare</div>
+      <div class="pp-item">Les clients grands comptes attendent une valeur ajoutée au-delà du simple placement de personnel</div>
+      <div class="pp-item">Les appels d'offres sont perdus faute d'arguments différenciants sur la montée en compétences des intérimaires</div>
+      <div class="pp-item">Le financement OPCO (ex. AKTO) permet de proposer cette valeur ajoutée sans surcoût pour le client</div>
+    </div>
+  </div>
+
+  <div class="script-section">
+    <div class="script-label">Script</div>
+    <div class="script-block">
+      <div class="speech">« Bonjour [Prénom], chez Daylindo on aide les entreprises de travail temporaire <strong>à consolider leur relation avec leurs clients grands comptes.</strong> On travaille avec <strong>Supplay</strong> qui grâce à notre solution a gagné des appels d'offres — notamment dans l'industrie pharmaceutique — en apportant à ses clients une <strong>formation au poste financée par AKTO</strong>, donc sans surcoût pour eux. Je vous précise qu'<strong>on ne peut pas travailler avec tout le monde</strong> — c'est un levier de différenciation, ça perd son sens si tous les acteurs l'ont. J'ai choisi de vous appeler parce que je pense qu'on pourrait nouer un <strong>partenariat intéressant</strong>. Est-ce que vous avez <strong>20 à 30 minutes</strong> cette semaine ou la suivante pour qu'on en parle ? »</div>
+    </div>
+  </div>
+
+  <div class="note">💡 L'argument de rareté <em>("on ne peut pas travailler avec tout le monde")</em> est un pattern fort en cold call. Il positionne Daylindo comme partenaire stratégique, pas comme fournisseur.</div>
+
+  <div style="margin-top:14px">
+    <div class="ref">
+      <div class="ref-label">Référence</div>
+      Supplay · AKTO · Industrie pharmaceutique
+    </div>
+  </div>
+</div>
+
+<!-- ────────── S1b ────────── -->
+<div class="panel s1" id="panel-s1b">
+  <div class="pitch-hero">
+    <div class="pitch-code">Segment 1 · Pitch S1b</div>
+    <div class="pitch-title">Entreprises à forte saisonnalité</div>
+    <div class="pitch-who"><strong>Interlocuteur :</strong> DRH · Directeur exploitation · Directeur des opérations</div>
+  </div>
+
+  <div class="pp-block">
+    <div class="pp-label">🎯 Pain point ciblé — Double contrainte saisonnière : former vite + maîtriser le coût d'intégration qui se répète</div>
+    <div class="pp-items">
+      <div class="pp-item">Volumes importants de nouveaux arrivants à intégrer en temps très court — souvent quelques jours</div>
+      <div class="pp-item">Coût d'intégration élevé et répété à chaque saison sans optimisation structurelle</div>
+      <div class="pp-item">Parcours de formation non financés alors que les OPCO le permettent — coût supporté inutilement</div>
+      <div class="pp-item">Opérateurs peu productifs en début de cycle faute d'une intégration directement au poste</div>
+    </div>
+  </div>
+
+  <div class="script-section">
+    <div class="script-label">Script</div>
+    <div class="script-block">
+      <div class="speech">« Bonjour [Prénom], je vous appelle parce que je pense que vous êtes confronté <strong>à une double contrainte que l'on voit partout dans les secteurs saisonniers : former vite des collaborateurs qui arrivent en masse, et maîtriser le coût de cette intégration qui se répète à chaque cycle.</strong> On travaille justement avec les <strong>grands acteurs de la logistique</strong> — un secteur soumis à une très forte saisonnalité. On optimise le parcours d'intégration <strong>directement au poste de travail</strong> et on fait <strong>financer ces parcours par les OPCO</strong> — ce qui réduit significativement le coût net pour l'entreprise. Est-ce que vous avez <strong>20 à 30 minutes</strong> cette semaine ou la suivante pour voir comment on fait et ce que ça donnerait chez vous ? »</div>
+      <div class="pause">→ Pause après la question finale. Attendre la réponse.</div>
+    </div>
+  </div>
+
+  <div style="margin-top:14px">
+    <div class="ref">
+      <div class="ref-label">Référence</div>
+      Grands acteurs de la logistique · Saisonnalité forte · Financement OPCO
+    </div>
+  </div>
+</div>
+
+<!-- ────────── S3a ────────── -->
+<div class="panel s3" id="panel-s3a">
+  <div class="pitch-hero">
+    <div class="pitch-code">Segment 3 · Pitch S3a</div>
+    <div class="pitch-title">Réseau d'agences d'intérim — formation des permanents</div>
+    <div class="pitch-who"><strong>Interlocuteur :</strong> DRH groupe · Directeur formation · Directeur réseau</div>
+  </div>
+
+  <div class="pp-block">
+    <div class="pp-label">🎯 Pain point ciblé — Hétérogénéité des pratiques et des compétences entre agences · faible visibilité centrale</div>
+    <div class="pp-items">
+      <div class="pp-item">Des dizaines d'agences avec des niveaux de maîtrise très variables sur les mêmes gestes métiers</div>
+      <div class="pp-item">L'équipe centrale n'a pas de visibilité en temps réel sur les compétences des permanents terrain</div>
+      <div class="pp-item">Les parcours d'intégration des nouveaux consultants ne sont pas standardisés d'une agence à l'autre</div>
+      <div class="pp-item">Financement OPCO des parcours de formation des permanents sous-exploité</div>
+    </div>
+  </div>
+
+  <div class="script-section">
+    <div class="script-label">Script — Phase 1 · Accroche + question</div>
+    <div class="script-block">
+      <div class="speech">« Bonjour [Prénom], je vous appelle parce que je pense que vous avez un défi <strong>que l'on voit chez tous les réseaux d'agences : des dizaines d'agences, des centaines de collaborateurs — et très peu de visibilité sur l'homogénéité des pratiques et des compétences d'une agence à l'autre.</strong> <strong>Vous avez ce sujet chez vous ?</strong> »</div>
+      <div class="pause">→ Pause. Laisser le prospect répondre. Ne pas enchaîner.</div>
+    </div>
+  </div>
+
+  <div class="script-section">
+    <div class="script-label">Script — Phase 2 · Solution + CTA</div>
+    <div class="script-block">
+      <div class="speech">« On travaille avec <strong>Supplay et Adéquat</strong> sur exactement ce sujet — standardiser les parcours, avoir une <strong>visibilité centrale sur les compétences terrain</strong>, financé par les OPCO. Faire plus avec moins. Est-ce que vous avez <strong>20 à 30 minutes</strong> cette semaine ou la suivante pour voir comment on fait ? »</div>
+    </div>
+  </div>
+
+  <div style="margin-top:14px">
+    <div class="ref">
+      <div class="ref-label">Référence</div>
+      Supplay · Adéquat · Formation des permanents · Financement OPCO
+    </div>
+  </div>
+</div>
+
+<!-- ────────── S3b ────────── -->
+<div class="panel s3" id="panel-s3b">
+  <div class="pitch-hero">
+    <div class="pitch-code">Segment 3 · Pitch S3b</div>
+    <div class="pitch-title">Réseau franchise / bancaire / assurance</div>
+    <div class="pitch-who"><strong>Interlocuteur :</strong> DRH groupe · Directeur formation · Directeur réseau</div>
+  </div>
+
+  <div class="pp-block">
+    <div class="pp-label">🎯 Pain point ciblé — Écart de performance entre les meilleurs et les autres sites · standardisation insuffisante</div>
+    <div class="pp-items">
+      <div class="pp-item">Les meilleures agences performent bien — les autres peinent sans que le diagnostic soit clair</div>
+      <div class="pp-item">Les pratiques métiers et les niveaux de compétences varient fortement d'un site à l'autre</div>
+      <div class="pp-item">Pas de visibilité centrale sur les compétences réelles par site — pilotage à l'aveugle</div>
+      <div class="pp-item">Engagement des collaborateurs faible faute de parcours de développement lisibles et valorisants</div>
+    </div>
+  </div>
+
+  <div class="script-section">
+    <div class="script-label">Script — Phase 1 · Accroche + question</div>
+    <div class="script-block">
+      <div class="speech">« Bonjour [Prénom], je vous appelle parce que dans les réseaux comme le vôtre, <strong>on observe souvent le même écart : les meilleures agences performent très bien, et les autres peinent à atteindre le même niveau — non pas par manque de volonté, mais parce que les pratiques et les compétences ne sont pas homogènes d'un site à l'autre.</strong> <strong>C'est un sujet que vous reconnaissez ?</strong> »</div>
+      <div class="pause">→ Pause. Laisser le prospect répondre. Ne pas enchaîner.</div>
+    </div>
+  </div>
+
+  <div class="script-section">
+    <div class="script-label">Script — Phase 2 · Solution + CTA</div>
+    <div class="script-block">
+      <div class="speech">« Daylindo permet à l'équipe centrale d'avoir une <strong>visibilité en temps réel sur la maîtrise des compétences dans chaque site</strong>, de standardiser les parcours de montée en compétence, et de piloter l'homogénéisation des pratiques à l'échelle du réseau. Et nous pouvons <strong>faire financer la démarche par l'OPCO</strong>. Est-ce que vous avez <strong>20 à 30 minutes</strong> cette semaine pour voir ce que ça donnerait chez vous ? »</div>
+      <div class="pause">→ Pause après la question finale. Attendre la réponse.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ────────── S2a ────────── -->
+<div class="panel s2" id="panel-s2a">
+  <div class="pitch-hero">
+    <div class="pitch-code">Segment 2 · Pitch S2a</div>
+    <div class="pitch-title">Coût caché — pertes opérationnelles</div>
+    <div class="pitch-who"><strong>Interlocuteur :</strong> Directeur de production · Directeur des opérations</div>
+  </div>
+
+  <div class="pp-block">
+    <div class="pp-label">🎯 Pain point ciblé — Manque de visibilité sur les compétences → pertes opérationnelles directes non mesurées</div>
+    <div class="pp-items">
+      <div class="pp-item">Lignes fermées ou sous-productives faute de personnel qualifié disponible au bon moment</div>
+      <div class="pp-item">Rebuts et non-conformités générés par des opérateurs affectés sur des postes non maîtrisés</div>
+      <div class="pp-item">Coût invisible car jamais mesuré ni attribué à la gestion des compétences</div>
+    </div>
+  </div>
+
+  <div class="script-section">
+    <div class="script-label">Script — Phase 1 · Accroche + question</div>
+    <div class="script-block">
+      <div class="speech">« Bonjour [Prénom], je vous appelle parce que je pense que vous êtes confronté à un enjeu <strong>que l'on voit partout dans l'industrie : sécuriser la maîtrise des gestes métiers sur vos lignes.</strong> On vient justement de mesurer chez un industriel <strong>380 000 € de pertes annuelles</strong> directement liées au manque de visibilité sur les compétences terrain — <strong>200 000 € de lignes fermées</strong> faute de personnel qualifié disponible, et <strong>180 000 € de rebuts</strong> générés par des opérateurs sur des postes qu'ils ne maîtrisaient pas encore. <strong>Vous avez ce sujet chez vous ?</strong> »</div>
+      <div class="pause">→ Pause. Laisser le prospect répondre. Ne pas enchaîner.</div>
+    </div>
+  </div>
+
+  <div class="script-section">
+    <div class="script-label">Script — Phase 2 · Solution + CTA</div>
+    <div class="script-block">
+      <div class="speech">« Daylindo permet justement de <strong>sécuriser la transmission des gestes métiers</strong> et de savoir en temps réel qui peut tenir quel poste, à quel niveau. Je vous propose <strong>20 minutes</strong> pour vous montrer comment on fait et ce que ça donnerait chez vous ? »</div>
+    </div>
+  </div>
+
+  <div style="margin-top:14px">
+    <div class="ref">
+      <div class="ref-label">Preuve</div>
+      Mesure réelle effectuée chez un client industriel Daylindo. Chiffres opposables.
+    </div>
+  </div>
+</div>
+
+<!-- ────────── S2b ────────── -->
+<div class="panel s2" id="panel-s2b">
+  <div class="pitch-hero">
+    <div class="pitch-code">Segment 2 · Pitch S2b</div>
+    <div class="pitch-title">Turnover & Onboarding</div>
+    <div class="pitch-who"><strong>Interlocuteur :</strong> DRH · Responsable formation · Responsable RH opérationnel</div>
+  </div>
+
+  <div class="pp-block">
+    <div class="pp-label">🎯 Pain point ciblé — Turnover accéléré + difficulté à trouver et intégrer les bons profils opérationnels</div>
+    <div class="pp-items">
+      <div class="pp-item">Chaque départ efface un savoir-faire non tracé — on repart de zéro à chaque arrivée</div>
+      <div class="pp-item">Temps d'intégration trop long : le nouvel opérateur n'est pas productif assez vite</div>
+      <div class="pp-item">Parcours internes peu valorisés : pas de visibilité sur qui peut progresser vers quel poste</div>
+    </div>
+  </div>
+
+  <div class="script-section">
+    <div class="script-label">Script — Phase 1 · Accroche + question</div>
+    <div class="script-block">
+      <div class="speech">« Bonjour [Prénom], je vous contacte parce qu'on travaille avec des industriels qui font face <strong>à deux réalités simultanées : un turnover qui s'accélère et une difficulté croissante à trouver les bons profils opérationnels.</strong> <strong>Vous avez ce sujet chez vous ?</strong> »</div>
+      <div class="pause">→ Pause. Laisser le prospect répondre. Ne pas enchaîner.</div>
+    </div>
+  </div>
+
+  <div class="script-section">
+    <div class="script-label">Script — Phase 2 · Solution + CTA</div>
+    <div class="script-block">
+      <div class="speech">« Chez Daylindo on aide les industriels à <strong>former leurs nouveaux collaborateurs directement au poste de travail</strong> et à <strong>valoriser les parcours internes</strong> pour limiter le turnover. On fait ça par exemple avec les intérimaires de <strong>Supplay</strong> pour leurs entreprises utilisatrices, et pour les techniciens d'<strong>Orange</strong>. Est-ce que vous avez <strong>20 minutes</strong> cette semaine pour voir ce que ça donne concrètement chez vous ? »</div>
+    </div>
+  </div>
+
+  <div style="margin-top:14px">
+    <div class="ref">
+      <div class="ref-label">Référence</div>
+      Supplay (intérim industriel) · Orange (grands comptes / techniciens terrain)
+    </div>
+  </div>
+</div>
+
+<!-- ────────── S2c ────────── -->
+<div class="panel s2" id="panel-s2c">
+  <div class="pitch-hero">
+    <div class="pitch-code">Segment 2 · Pitch S2c</div>
+    <div class="pitch-title">Conformité & Sécurité réglementaire</div>
+    <div class="pitch-who"><strong>Interlocuteur :</strong> Directeur HSE · Responsable conformité · DRH secteurs réglementés</div>
+  </div>
+
+  <div class="pp-block">
+    <div class="pp-label">🎯 Pain point ciblé — Obligation réglementaire de prouver la compétence · traçabilité inexistante ou insuffisante</div>
+    <div class="pp-items">
+      <div class="pp-item">En cas d'incident ou de contrôle : impossibilité de prouver que l'opérateur était dûment formé</div>
+      <div class="pp-item">Habilitations et niveaux validés gérés en silo ou sur Excel — non opposables</div>
+      <div class="pp-item">Responsabilité pénale du dirigeant engagée si la preuve de compétence ne peut être apportée</div>
+    </div>
+  </div>
+
+  <div class="script-section">
+    <div class="script-label">Variante A — sans référence client nommée</div>
+    <div class="variante-block">
+      <span class="variante-label var-a">Variante A</span>
+      <div class="script-block">
+        <div class="speech">« Bonjour [Prénom], je vous appelle parce que je pense que vous êtes soumis à une réglementation <strong>assez forte sur les compétences de vos opérateurs.</strong> Pour toute formation réglementaire où vous devez <strong>prouver que vous avez fait le nécessaire</strong>, on a exactement ce qu'il faut — traçabilité complète, niveau validé pour chaque opérateur, directement au poste. Est-ce que vous avez <strong>20 minutes</strong> cette semaine pour voir si ça peut s'appliquer chez vous ? »</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="script-section">
+    <div class="script-label">Variante B — avec référence Orange / Dekra</div>
+    <div class="variante-block">
+      <span class="variante-label var-b">Variante B</span>
+      <div class="script-block">
+        <div class="speech">« Bonjour [Prénom], je vous appelle parce que je pense que vous êtes soumis à une réglementation <strong>assez forte sur les compétences de vos opérateurs.</strong> On a justement travaillé avec <strong>Orange et Dekra</strong> sur la formation aux habilitations électriques — directement au poste de travail, avec la <strong>traçabilité complète</strong> pour prouver à tout moment que l'opérateur était dûment formé et évalué. Pour toute formation réglementaire où vous devez faire cette preuve, <strong>c'est exactement ce qu'on adresse.</strong> Est-ce que vous avez <strong>20 minutes</strong> cette semaine pour voir ce qu'on a fait et si ça s'applique chez vous ? »</div>
+        <div class="pause">→ Pause après la question finale. Attendre la réponse.</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top:6px">
+    <div class="ref">
+      <div class="ref-label">Référence</div>
+      Orange + Dekra · Habilitations électriques · Formation réglementaire au poste
+    </div>
+  </div>
+</div>
+
+<!-- ────────── S2d ────────── -->
+<div class="panel s2" id="panel-s2d">
+  <div class="pitch-hero">
+    <div class="pitch-code">Segment 2 · Pitch S2d</div>
+    <div class="pitch-title">Transmission des savoirs & Départs seniors</div>
+    <div class="pitch-who"><strong>Interlocuteur :</strong> Responsable formation · Responsable transmission des savoirs · DRH</div>
+  </div>
+
+  <div class="pp-block">
+    <div class="pp-label">🎯 Pain point ciblé — Perte irréversible du savoir-faire tacite lors des départs d'experts seniors</div>
+    <div class="pp-items">
+      <div class="pp-item">59% des collaborateurs de plus de 55 ans envisagent de quitter l'industrie dans les 5 prochaines années <em>(Workplace Intelligence, 2025)</em></div>
+      <div class="pp-item">68% des managers estiment qu'au moins la moitié de leurs connaissances critiques sera perdue définitivement</div>
+      <div class="pp-item">72% des managers ne sont pas confiants dans leur capacité à retenir ce savoir-faire</div>
+      <div class="pp-item">Le savoir tacite (gestes, réflexes, heuristiques terrain) ne se transmet pas par les formations classiques</div>
+    </div>
+  </div>
+
+  <div class="script-section">
+    <div class="script-label">Variante A — Responsable formation / DRH · angle Orange</div>
+    <div class="variante-block">
+      <span class="variante-label var-a">Variante A</span>
+      <div class="script-block">
+        <div class="speech">« Bonjour [Prénom], je vous appelle parce qu'on travaille avec des industriels qui font face <strong>à une réalité qu'on voit s'accélérer : dans les 5 prochaines années, près de 60% de vos collaborateurs les plus expérimentés vont partir à la retraite — et avec eux, des années de savoir-faire qui ne sont nulle part documentés.</strong> <strong>Vous avez ce sujet chez vous ?</strong> »</div>
+        <div class="pause">→ Pause. Laisser le prospect répondre. Ne pas enchaîner.</div>
+        <div class="speech">« C'est exactement ce qu'on a traité avec <strong>Orange</strong> — capturer les gestes métiers des experts directement au poste de travail, avant qu'ils partent, pour les rendre <strong>transmissibles et évaluables</strong> pour les suivants. Est-ce que vous avez <strong>20 minutes</strong> cette semaine pour voir comment on fait concrètement ? »</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="script-section">
+    <div class="script-label">Variante B — Responsable transmission des savoirs / Knowledge Manager · angle Thalès</div>
+    <div class="variante-block">
+      <span class="variante-label var-b">Variante B</span>
+      <div class="script-block">
+        <div class="speech">« Bonjour [Prénom], je vous appelle parce qu'on a été sélectionné par <strong>Thalès</strong> pour un sujet que vous connaissez bien : capturer et transmettre les savoirs critiques avant que les experts ne partent. Une étude récente montre que <strong>68% des managers dans l'industrie</strong> estiment que la moitié de leurs connaissances clés sera perdue définitivement lors des prochains départs. <strong>Vous avez ce risque identifié chez vous ?</strong> »</div>
+        <div class="pause">→ Pause. Laisser le prospect répondre. Ne pas enchaîner.</div>
+        <div class="speech">« Daylindo permet de <strong>capturer ces gestes et ces savoirs directement au poste de travail</strong> et de les rendre accessibles et évaluables pour les suivants — c'est exactement l'usage qu'on déploie chez <strong>Thalès</strong>. Est-ce que vous avez <strong>20 minutes</strong> cette semaine pour voir ce que ça donnerait dans votre contexte ? »</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top:6px">
+    <div class="ref">
+      <div class="ref-label">Référence</div>
+      Orange (transmission gestes métiers) · Thalès (savoirs critiques · départs seniors)
+    </div>
+    <div class="ref" style="margin-top:8px">
+      <div class="ref-label">Source</div>
+      Workplace Intelligence / Flip — Frontline Generational Skills Gap Study, 2025
+    </div>
+  </div>
+</div>
+
+<!-- ────────── RÈGLES ────────── -->
+<div class="panel" id="panel-regles">
+  <div style="margin-bottom:20px;padding-top:4px">
+    <div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:#fff;margin-bottom:6px">Les 4 règles communes à tous les pitchs</div>
+  </div>
+  <div class="rules-grid">
+    <div class="rule-card">
+      <div class="rule-title">Accroche en une phrase</div>
+      <div class="rule-desc">Le prospect reçoit une seule information dans les 8 premières secondes.</div>
+    </div>
+    <div class="rule-card">
+      <div class="rule-title">Question courte après l'accroche</div>
+      <div class="rule-desc">Elle force une réponse et crée un dialogue. Le prospect qui a répondu une fois ne raccroche pas.</div>
+    </div>
+    <div class="rule-card">
+      <div class="rule-title">Solution en une phrase</div>
+      <div class="rule-desc">On nomme ce qu'on fait, on ne l'explique pas. L'explication c'est pour les 20–30 minutes demandées.</div>
+    </div>
+    <div class="rule-card">
+      <div class="rule-title">Call to action concret</div>
+      <div class="rule-desc">"20 à 30 minutes cette semaine ou la suivante" — jamais "est-ce que ça vous intéresse ?"</div>
+    </div>
+  </div>
+  <div class="rappel">
+    <strong>Rappel fondamental :</strong> L'objectif du cold call n'est pas de vendre. C'est d'obtenir 20 à 30 minutes. Tout ce qui dépasse cet objectif dans le pitch est superflu.
+  </div>
+  <div style="margin-top:32px;font-size:10px;color:var(--dim);text-align:center;letter-spacing:.08em">
+    Daylindo · Équipe commerciale · Pitchs cold call · Avril 2026 · Version 4 · Usage interne · Confidentiel
+  </div>
+</div>
+
+<script>
+function show(id, btn) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('show'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('panel-' + id).classList.add('show');
+  if (btn) {
+    btn.classList.add('active');
+  } else {
+    // find the matching btn
+    document.querySelectorAll('.nav-btn').forEach(b => {
+      if (b.getAttribute('onclick') && b.getAttribute('onclick').includes("'" + id + "'")) {
+        b.classList.add('active');
+      }
+    });
+  }
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+</script>
+</body>
+</html>
